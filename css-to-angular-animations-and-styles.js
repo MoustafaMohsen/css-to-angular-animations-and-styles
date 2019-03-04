@@ -1,12 +1,14 @@
-console.log("this is test-package-css.js");
 //const CSSJSON = require("./node_modules/css-to-json/cssjson");
 const fs = require("fs");
 ///*** Default File paths */
+
 var fileOutPath = "output.ts";
 var fileInPath = "input.css";
 const path = require("path");
 var ToFunctions = true;
 var AddInputs = true;
+
+var t0 = new Date();
 
 let getNodeArguments = () => {
   try {
@@ -32,9 +34,10 @@ let getNodeArguments = () => {
   }
 };
 getNodeArguments();
+
 console.log("\n");
-console.log("Input Path",fileInPath);
-console.log("Output Path",fileOutPath);
+console.log("Input Path", fileInPath);
+console.log("Output Path", fileOutPath);
 console.log("\n");
 
 // To JSON
@@ -377,8 +380,8 @@ function JsonCssToClasses(str, obj = null) {
     let oneClass = !CSSSelectorName.match(/\./g)
       ? false
       : CSSSelectorName.match(/\./g).length == 1
-        ? true
-        : false;
+      ? true
+      : false;
     if (!oneClass) {
       continue;
     }
@@ -440,7 +443,7 @@ function ClassesToStyles(ClassesArr) {
     var prop = {};
     for (var i = 0; i < PropArr.length; i++) {
       const propObj = PropArr[i];
-      propObj.value=propertySpecialCases(propObj.value)
+      propObj.value = propertySpecialCases(propObj.value);
       prop[propObj.name] = propObj.value;
     }
     let styleStr = `style(${JSON.stringify(prop)})`;
@@ -455,7 +458,7 @@ function ClassesToStyles(ClassesArr) {
     //check if class alread exsists
     if (Styles[ClassObj.classname]) {
       Styles[ClassObj.classname + "_i"] = styleStr;
-      console.log("Duplicat classes was found");
+      console.log("Duplicate classes was found");
       console.log(ClassObj.classname);
     } else {
       Styles[ClassObj.classname] = styleStr;
@@ -551,13 +554,13 @@ function JsonCssToKeyframe(str, obj = null) {
   //console.log(Frames);
   return Offsetkeyframes;
 } //JsonCssToKeyframe()
-function propertySpecialCases(value){
-  if (typeof value=="string") {
-    if (value.match(/\"\*\"/g)||value.match(/\'\*\'/g)) {
-      value = value.replace(/\"\*\"/g,"*").replace(/\'\*\'/g,"*")
-    }     
+function propertySpecialCases(value) {
+  if (typeof value == "string") {
+    if (value.match(/\"\*\"/g) || value.match(/\'\*\'/g)) {
+      value = value.replace(/\"\*\"/g, "*").replace(/\'\*\'/g, "*");
+    }
   }
-  return value
+  return value;
 }
 function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
   var OffsetToProp = offsetArr => {
@@ -569,7 +572,7 @@ function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
       let styleProp = {};
       for (let i3 = 0; i3 < offset.properties.length; i3++) {
         var property = offset.properties[i3];
-        property.value=propertySpecialCases(property.value)
+        property.value = propertySpecialCases(property.value);
         styleProp[property.name] = property.value;
       } //for i3
       styleProp["offset"] = offset.percent;
@@ -607,7 +610,7 @@ function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
     let OffArr = OffsetToProp(Keyframe.offsetArr);
     let KeyString = propsToKeyframeString(OffArr);
     let keyframeName = KeyframeSelectorToName(Keyframe.keyframeName);
-    KeyString = KeyString.replace(/'/g, "`").replace(/\\\"/g,"`")
+    KeyString = KeyString.replace(/'/g, "`").replace(/\\\"/g, "`");
     TransformedOnj[keyframeName] = KeyString.replace(/"/g, "'");
   } //for i1 /**Key frame */
   var keyframesStrnig = JSON.stringify(TransformedOnj);
@@ -615,14 +618,15 @@ function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
   return keyframesStrnig;
 } //KeyFramesOjbToKeyFramesJSON()
 
-function finalizeString(str){/*
+function finalizeString(str) {
+  /*
  str = `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
  export const JSONCSS={
    class:{"after":style({'content':'\\' (\\' attr(title) \\')\\''})},
    Animations:{"increaseHeight":keyframes([style({'transform':'translateY(100%) scale(0)','opacity':0,'offset':0}),style({'transform':'translateY(0%) scale(1)','opacity':1,'offset':1})])}
 }`*/
-str = str.replace(/\\\\/g,`\\`)
-return str;
+  str = str.replace(/\\\\/g, `\\`);
+  return str;
 }
 var keyframes = JsonCssToKeyframe("", json);
 var classes = JsonCssToClasses("", json);
@@ -649,12 +653,34 @@ let JsonCss = `{
     Animations:${keyframesStrnig}
 }`;
 var OutData = `${imports}export const GeneratedStyles=${JsonCss}`;
-OutData = finalizeString(OutData)
+OutData = finalizeString(OutData);
 //OutData=OutData.replace(/"/g,"'").replace(/\\/g,"")
 fs.writeFile(fileOutPath, OutData, err => {
   if (err) {
     console.log(err);
   } else {
-    console.log("done");
+    var t1 = new Date();
+    var diff = (t1 - t0) / 1000;
+
+    var baymessage = `
+
+Done,Call took ${diff} seconds.
+
+
+================ css-to-angular-animations ==================
+              ==================================
+
+This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
+
+Contributers:
+ - Moustafa Mohsen - Creator https://moustafamohsen.com
+
+Feel free to contribute to the project:
+https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
+
+              ==================================
+==============================================================
+`;
+    console.log(baymessage);
   }
 });

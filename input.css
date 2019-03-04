@@ -1,0 +1,19 @@
+@keyframes decreaseHeight{
+  from{
+	transform: translateY(0%) scale(1);
+	opacity:1;
+	height: "*";
+  }
+  to{
+	transform:translateY(100%) scale(0);
+	opacity:0;
+	height: 0
+  }
+}
+
+.height-100 {
+  height: "*";
+}
+.height-0 {
+  height: '*';
+}

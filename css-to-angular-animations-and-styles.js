@@ -341,8 +341,6 @@ var CSSJSON = new function() {
   };
 }();
 
-
-
 // ==== Extract classes from css object
 function JsonCssToClasses(str, obj = null) {
   var CSSObjectsArr = obj;
@@ -597,7 +595,6 @@ function KeyframesToAngularKeyframes(_CSSObject) {
     return name;
   };
 
-
   var CSSObject = _CSSObject;
   var TransformedOnj = {};
   for (let i = 0; i < CSSObject.length; i++) {
@@ -620,11 +617,11 @@ function finalizeString(str) {
   return str;
 }
 
-function ReadyTsString(classesString,keyframesStrnig,AddImports=true) {
+function ReadyTsString(classesString, keyframesStrnig, AddImports = true) {
   let imports = AddImports
-  ? `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
+    ? `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
   `
-  : ``;
+    : ``;
 
   let JsonCss = `{
       class:${classesString},
@@ -633,7 +630,6 @@ function ReadyTsString(classesString,keyframesStrnig,AddImports=true) {
   var OutData = `${imports}export const GeneratedStyles=${JsonCss};`;
   return OutData;
 }
-
 
 //var data = JSON.stringify(json).replace(/[\b\f\n\r\t\v\0]/g, "");
 
@@ -653,12 +649,10 @@ var json = CSSJSON.toJSON(cssString);
 var classes = JsonCssToClasses("", json);
 
 // convert classes to angular style objects
-var Stylesclasses = ClassesToStyles(classes); 
+var Stylesclasses = ClassesToStyles(classes);
 
 // stringfy the angular style objects
 var classesString = JSON.stringify(Stylesclasses);
-
-
 
 // === Keyframes to angular keyframes
 // get keyframes
@@ -683,19 +677,17 @@ if (ToFunctions) {
     .replace(`})"}`, `})}`);
 }
 
-
-var OutData = ReadyTsString(classesString,keyframesStrnig);
+var OutData = ReadyTsString(classesString, keyframesStrnig, AddImports);
 OutData = finalizeString(OutData);
 
 // ======== Write .ts file
 fs.writeFile(fileOutPath, OutData, err => {
   if (err) {
     console.log(err);
-
   } else {
     var t1 = new Date();
     var diff = (t1 - t0) / 1000;
-  
+
     var baymessage = `
   
     
@@ -714,7 +706,7 @@ fs.writeFile(fileOutPath, OutData, err => {
   
               ==================================
   ==============================================================
-  `;  
-    console.log(baymessage);  
+  `;
+    console.log(baymessage);
   }
 });

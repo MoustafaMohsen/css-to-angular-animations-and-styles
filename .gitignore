@@ -80,3 +80,6 @@ typings/
 .fusebox/
 
 # DynamoDB Local files
+
+Animate.css
+output.ts

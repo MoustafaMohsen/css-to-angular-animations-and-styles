@@ -125,6 +125,6 @@ Write-Host '
 Apause -message '(note: if there is a file with the same name as the output file in the output path it will be overwritten)
 '
 
-node css-to-angular-animations-and-styles $inputcsspath $outputtspath
+node index.js $inputcsspath $outputtspath
 
 pause

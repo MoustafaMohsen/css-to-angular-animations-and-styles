@@ -3621,33 +3621,3 @@
     transition: none !important;
   }
 }
-
-
-
-/**
-
-This is a custom css @keyframe that works only with angular animation, notice the "*" as height, it tells angular to use the last current values, useful when wanting to change height without knowing the original object height.
-
-*/
-
-@keyframes decreaseHeight{
-  from{
-	transform: translateY(0%) scale(1);
-	opacity:1;
-	height: "*";
-  }
-  to{
-	transform:translateY(100%) scale(0);
-	opacity:0;
-	height: 0
-  }
-}
-
-.height-100 {
-  height: "*";
-}
-.height-0 {
-  height: '*';
-}
-
-

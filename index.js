@@ -2,8 +2,8 @@
 const fs = require("fs");
 ///*** Default File paths */
 
-var fileOutPath = "output.ts";
 var fileInPath = "input.css";
+var fileOutPath = "output.ts";
 const path = require("path");
 
 var ToFunctions = true;
@@ -36,10 +36,12 @@ let getNodeArguments = () => {
 };
 getNodeArguments();
 
-console.log("\n");
-console.log("Input Path", fileInPath);
-console.log("Output Path", fileOutPath);
-console.log("\n");
+let helloMessage = `
+Input file : ${fileInPath}
+Output file : ${fileOutPath}
+(note: output file will be overwritten if file already exists)
+`
+console.log(helloMessage);
 
 // To JSON
 function TryParseInt(str, defaultValue) {
@@ -689,23 +691,22 @@ fs.writeFile(fileOutPath, OutData, err => {
     var diff = (t1 - t0) / 1000;
 
     var baymessage = `
-  
-    
-    Done,Call took ${diff} seconds.
-  
-  ================ css-to-angular-animations ==================
-              ==================================
-  
-  This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
-  
-  Contributers:
-  - Moustafa Mohsen - Creator https://moustafamohsen.com
-  
-  Feel free to contribute to the project:
-  https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
-  
-              ==================================
-  ==============================================================
+
+Done,Call time ${diff} seconds.
+
+================ css-to-angular-animations ==================
+            ==================================
+
+This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
+
+Contributors:
+- Moustafa Mohsen - Creator https://moustafamohsen.com
+
+Feel free to contribute to the project, thank:
+https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
+
+            ==================================
+==============================================================
   `;
     console.log(baymessage);
   }

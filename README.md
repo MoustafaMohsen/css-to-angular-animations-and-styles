@@ -63,71 +63,42 @@ Let implment a simple animation when a component goes from shown to destroyed us
 3. copy `animate.ts` to your project, and import it to you component
 
 ```javascript
-
 import { trigger, transition, animate } from  '@angular/animations';
-
 import { GeneratedStyles } from  './animate';
 
-  
-
 @Component({
+  ...
 
-...
+  animations:[
+    trigger("YOUR_ANIMATION_NAME", [
+      transition(`:leave`, [
+        animate("0.5s ease", GeneratedStyles.Animations.fadeOut)
+      ]),
 
-animations:[
-
-trigger("YOUR_ANIMATION_NAME", [
-
-transition(`:leave`, [
-
-animate("0.5s ease", GeneratedStyles.Animations.fadeOut)
-
-]),
-
-transition(`:enter`, [
-
-animate("0.5s ease", GeneratedStyles.Animations.fadeIn)
-
-])
-
-])
-
-]
-
+      transition(`:enter`, [
+        animate("0.5s ease", GeneratedStyles.Animations.fadeIn)
+      ])
+    ])
+  ]
 })
 
-  
 
 // the following is just an example of how *ngIf could be used
-
 export  class  AppComponent  implements  OnInit {
-
-show=true;
-
-ngOnInit(): void {
-
-// toggle between true and false every 2 secound
-
-setInterval(() => {
-
-this.show=!this.show;
-
-}, 2000);;
-
+    show=true;
+    ngOnInit(): void {
+        // toggle between true and false every 2 secound
+        setInterval(() => {
+            this.show=!this.show;
+        }, 2000);;
+    }
 }
-
-}
-
-  
-
 ```
 
 4. apply the animation to your html
 
 ```html
-
 <mycomponent  [@YOUR_ANIMATION_NAME]  *ngIf="show"></mycomponent>
-
 ```
 
 now you animation is working, you can use different combinations of animations and/or different states
@@ -173,26 +144,19 @@ Please read [CONTRIBUTING.md](https://github.com/MoustafaMohsen/css-to-angular-a
 
 ## Authors
 
-  
-
 *  **Moustafa Mohsen** - *Initial* - [moustafamohsen.com](moustafamohsen.com)
 
-  
-  
-  
+
 
 ### Versioning
 
 [SemVer](http://semver.org/)
 
-  
-  
 
 ### License
 
 [MIT License](LICENSE.md)
 
-  
 
 ---
 

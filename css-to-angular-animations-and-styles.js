@@ -5,8 +5,9 @@ const fs = require("fs");
 var fileOutPath = "output.ts";
 var fileInPath = "input.css";
 const path = require("path");
+
 var ToFunctions = true;
-var AddInputs = true;
+var AddImports = true;
 
 var t0 = new Date();
 
@@ -54,14 +55,6 @@ function TryParseInt(str, defaultValue) {
     }
   }
   return retValue;
-}
-
-function objectPropertyFormatter(value) {
-  value = TryParseInt(value, value);
-  if (typeof value == "string") {
-    value = value.replace(/'/g, "\\'").replace(/"/g, '\\"');
-  }
-  return value;
 }
 
 function CleanStr(str, light = true) {
@@ -348,12 +341,9 @@ var CSSJSON = new function() {
   };
 }();
 
-var cssString = fs.readFileSync(fileInPath, "utf8", (err, data) => {
-  if (err) {
-    console.log(err);
-  } else {
-  }
-});
+
+
+// ==== Extract classes from css object
 function JsonCssToClasses(str, obj = null) {
   var CSSObjectsArr = obj;
   if (!obj) {
@@ -368,7 +358,7 @@ function JsonCssToClasses(str, obj = null) {
 
   let ClassesArr = [];
   //loop through every selecor to Extract children
-  let Offsetkeyframes = [];
+  //let Offsetkeyframes = [];
   for (var [CSSSelectorName, CSSSelectorValue] of CSSObjectEntreis) {
     //If it's not first livel selector
     if (typeof CSSSelectorName != "string") {
@@ -386,7 +376,7 @@ function JsonCssToClasses(str, obj = null) {
       continue;
     }
     //If its a single class
-    let WordRgex = /(?<=\.)((\w+[-]\w+)|(\w+))/g;
+    //let WordRgex = /(?<=\.)((\w+[-]\w+)|(\w+))/g;
 
     let AnythinButClass = CSSSelectorName.match(/[\(\)\^\#\[\]\:\>\|\+\,]/g);
 
@@ -399,7 +389,7 @@ function JsonCssToClasses(str, obj = null) {
     //If Selector is class
 
     //look for children of object and seperate selector and value
-    const keyframeEntries = Object.entries(CSSSelectorValue.children);
+    //const keyframeEntries = Object.entries(CSSSelectorValue.children);
 
     //for (let [ClassName, SelectorValue] of keyframeEntries) {
 
@@ -432,11 +422,9 @@ function JsonCssToClasses(str, obj = null) {
   }
 
   return ClassesArr;
-} //JsonCssToKeyframe()
+} //JsonCssToClasses()
 
-var json = CSSJSON.toJSON(cssString);
-var data = JSON.stringify(json).replace(/[\b\f\n\r\t\v\0]/g, "");
-
+// ==== Convert classes object to angular styles object
 function ClassesToStyles(ClassesArr) {
   let Styles = {};
   var propsTostyle = PropArr => {
@@ -467,10 +455,12 @@ function ClassesToStyles(ClassesArr) {
   return Styles;
 } //ClassesToStyles()
 
-function JsonCssToKeyframe(str, obj = null) {
+// ==== Convert keyframes object to angular keyframes object
+function JsonCssToKeyframes(str, obj = null) {
   //if it's key frame
   var CSSObjectsArr = obj;
   if (!obj) {
+    // clean new lines
     str = str.replace(/[\b\f\n\r\t\v\0]/g, "");
     CSSObjectsArr = JSON.parse(str);
   }
@@ -553,7 +543,9 @@ function JsonCssToKeyframe(str, obj = null) {
   //} //for
   //console.log(Frames);
   return Offsetkeyframes;
-} //JsonCssToKeyframe()
+} //JsonCssToKeyframes()
+
+// == check if the property is a special property for angular only
 function propertySpecialCases(value) {
   if (typeof value == "string") {
     if (value.match(/\"\*\"/g) || value.match(/\'\*\'/g)) {
@@ -562,7 +554,8 @@ function propertySpecialCases(value) {
   }
   return value;
 }
-function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
+
+function KeyframesToAngularKeyframes(_CSSObject) {
   var OffsetToProp = offsetArr => {
     let OffArr = [];
     //Read offsets and convert it to types
@@ -598,42 +591,87 @@ function KeyFramesOjbToKeyFramesJSON(_CSSObject) {
     let keyframesString = `keyframes([${StylesString}])`;
     return keyframesString;
   };
+
   var KeyframeSelectorToName = keyframeName => {
     let name = /@?.*keyframes(.*)/g.exec(keyframeName)[1].trim();
     return name;
   };
+
+
   var CSSObject = _CSSObject;
   var TransformedOnj = {};
   for (let i = 0; i < CSSObject.length; i++) {
     /**  *****    Key frame ******         */
     const Keyframe = CSSObject[i];
+
+    // offset to properties
     let OffArr = OffsetToProp(Keyframe.offsetArr);
+
     let KeyString = propsToKeyframeString(OffArr);
     let keyframeName = KeyframeSelectorToName(Keyframe.keyframeName);
     KeyString = KeyString.replace(/'/g, "`").replace(/\\\"/g, "`");
     TransformedOnj[keyframeName] = KeyString.replace(/"/g, "'");
   } //for i1 /**Key frame */
-  var keyframesStrnig = JSON.stringify(TransformedOnj);
-  keyframesStrnig = keyframesStrnig.replace(/`/g, '"');
-  return keyframesStrnig;
-} //KeyFramesOjbToKeyFramesJSON()
+  return TransformedOnj;
+} //KeyframesToAngularKeyframes()
 
 function finalizeString(str) {
-  /*
- str = `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
- export const JSONCSS={
-   class:{"after":style({'content':'\\' (\\' attr(title) \\')\\''})},
-   Animations:{"increaseHeight":keyframes([style({'transform':'translateY(100%) scale(0)','opacity':0,'offset':0}),style({'transform':'translateY(0%) scale(1)','opacity':1,'offset':1})])}
-}`*/
   str = str.replace(/\\\\/g, `\\`);
   return str;
 }
-var keyframes = JsonCssToKeyframe("", json);
-var classes = JsonCssToClasses("", json);
-var Stylesclasses = ClassesToStyles(classes); //JSON.stringify(classes);
-var classesString = JSON.stringify(Stylesclasses);
-let keyframesStrnig = KeyFramesOjbToKeyFramesJSON(keyframes);
 
+function ReadyTsString(classesString,keyframesStrnig,AddImports=true) {
+  let imports = AddImports
+  ? `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
+  `
+  : ``;
+
+  let JsonCss = `{
+      class:${classesString},
+      Animations:${keyframesStrnig}
+  }`;
+  var OutData = `${imports}export const GeneratedStyles=${JsonCss};`;
+  return OutData;
+}
+
+
+//var data = JSON.stringify(json).replace(/[\b\f\n\r\t\v\0]/g, "");
+
+// Read css file
+var cssString = fs.readFileSync(fileInPath, "utf8", (err, data) => {
+  if (err) {
+    console.log(err);
+  } else {
+  }
+});
+
+// === Classes to angular styles
+// convert css  to json object
+var json = CSSJSON.toJSON(cssString);
+
+// get classes
+var classes = JsonCssToClasses("", json);
+
+// convert classes to angular style objects
+var Stylesclasses = ClassesToStyles(classes); 
+
+// stringfy the angular style objects
+var classesString = JSON.stringify(Stylesclasses);
+
+
+
+// === Keyframes to angular keyframes
+// get keyframes
+var keyframes = JsonCssToKeyframes("", json);
+
+// convert keyframes to angular keyframes object
+let AngularKeyframes = KeyframesToAngularKeyframes(keyframes);
+
+// stringfy the angular keyframes object
+var keyframesStrnig = JSON.stringify(AngularKeyframes);
+keyframesStrnig = keyframesStrnig.replace(/`/g, '"');
+
+// always true
 if (ToFunctions) {
   keyframesStrnig = keyframesStrnig
     .replace(/":"/g, `":`)
@@ -644,43 +682,39 @@ if (ToFunctions) {
     .replace(/","/g, `,"`)
     .replace(`})"}`, `})}`);
 }
-let imports = AddInputs
-  ? `import {trigger,state,style,animate,transition, group,keyframes} from "@angular/animations";
-  `
-  : ``;
-let JsonCss = `{
-    class:${classesString},
-    Animations:${keyframesStrnig}
-}`;
-var OutData = `${imports}export const GeneratedStyles=${JsonCss}`;
+
+
+var OutData = ReadyTsString(classesString,keyframesStrnig);
 OutData = finalizeString(OutData);
-//OutData=OutData.replace(/"/g,"'").replace(/\\/g,"")
+
+// ======== Write .ts file
 fs.writeFile(fileOutPath, OutData, err => {
   if (err) {
     console.log(err);
+
   } else {
     var t1 = new Date();
     var diff = (t1 - t0) / 1000;
-
+  
     var baymessage = `
-
-Done,Call took ${diff} seconds.
-
-
-================ css-to-angular-animations ==================
+  
+    
+    Done,Call took ${diff} seconds.
+  
+  ================ css-to-angular-animations ==================
               ==================================
-
-This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
-
-Contributers:
- - Moustafa Mohsen - Creator https://moustafamohsen.com
-
-Feel free to contribute to the project:
-https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
-
+  
+  This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
+  
+  Contributers:
+  - Moustafa Mohsen - Creator https://moustafamohsen.com
+  
+  Feel free to contribute to the project:
+  https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
+  
               ==================================
-==============================================================
-`;
-    console.log(baymessage);
+  ==============================================================
+  `;  
+    console.log(baymessage);  
   }
 });

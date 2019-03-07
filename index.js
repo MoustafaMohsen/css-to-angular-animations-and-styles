@@ -1,4 +1,4 @@
-//const CSSJSON = require("./node_modules/css-to-json/cssjson");
+#!/usr/bin/env node
 const fs = require("fs");
 ///*** Default File paths */
 

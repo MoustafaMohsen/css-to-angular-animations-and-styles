@@ -81,5 +81,6 @@ typings/
 
 # DynamoDB Local files
 
-Animate.css
-output.ts
+*.css
+!animate.css
+*.ts

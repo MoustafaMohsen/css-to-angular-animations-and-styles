@@ -107,3 +107,4 @@ Please read [CONTRIBUTING.md](https://github.com/MoustafaMohsen/css-to-angular-a
 
 [![HitCount](http://hits.dwyl.io/moustafamohsen/css-to-angular-animations-and-styles.svg)](http://hits.dwyl.io/moustafamohsen/css-to-angular-animations-and-styles)
 
+[![HitCount](http://hits.dwyl.io/moustafamohsen/css-to-angular-animations-and-styles.svg)](http://hits.dwyl.io/moustafamohsen/css-to-angular-animations-and-styles)

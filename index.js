@@ -692,8 +692,7 @@ fs.writeFile(fileOutPath, OutData, err => {
 
     var baymessage = `
 
-Done,Call time ${diff} seconds.
-
+Done, call time ${diff}s.
 ================ css-to-angular-animations ==================
             ==================================
 
@@ -702,7 +701,7 @@ This project is created by MoustafaMohsen, visit moustafamohsen.com for other aw
 Contributors:
 - Moustafa Mohsen - Creator https://moustafamohsen.com
 
-Feel free to contribute to the project, thank:
+Feel free to contribute to the project, thanks:
 https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
 
             ==================================

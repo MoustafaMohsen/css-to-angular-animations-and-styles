@@ -14,13 +14,27 @@ var t0 = new Date();
 let getNodeArguments = () => {
   try {
     // check paths in arguments
-    let hasFileInOutArgs = process.argv.length === 4;
-    if (!hasFileInOutArgs) {
-      throw "arguments for file-in and file-out should be provided";
+    let hasFileInOutArgs = process.argv.length < 3 || process.argv.length > 4
+    || !process.argv[2] ;
+    if (hasFileInOutArgs) {
+      throw "arguments for file-input and file-output should be provided";
     }
     // normalize paths
     fileInPath = path.resolve(path.normalize(process.argv[2])).toString();
-    fileOutPath = path.resolve(path.normalize(process.argv[3])).toString();
+    
+    fileOutPath = process.argv[3]? path.resolve(path.normalize(process.argv[3])).toString()
+    :path.parse(fileInPath).name+".ts";
+
+    let inExists = fs.existsSync(fileInPath);
+    if (!inExists) {
+      throw "input file not found";
+    }
+
+    let outExists = fs.existsSync(fileOutPath);
+    if (outExists) {
+      console.warn(`---Output file found, file will be OVERWRITTEN---`);
+    }
+
     // check paths for extensions
     let isFileInCss = fileInPath.endsWith(".css"),
       isFileOutJson = fileOutPath.endsWith(".json");
@@ -32,6 +46,7 @@ let getNodeArguments = () => {
     }
   } catch (err) {
     console.error(err);
+    throw err;
   }
 };
 getNodeArguments();

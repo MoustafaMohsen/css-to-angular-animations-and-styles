@@ -143,7 +143,7 @@ Please read [CONTRIBUTING.md](https://github.com/MoustafaMohsen/css-to-angular-a
 
 ## Authors
 
-*  **Moustafa Mohsen** - *Initial* - [moustafamohsen.com](moustafamohsen.com)
+*  **Moustafa Mohsen** - *Initial* - [moustafamohsen.com](https://moustafamohsen.com)
 
 
 

@@ -60,7 +60,7 @@ Let implment a simple animation when a component goes from shown to destroyed us
 
   
 
-3. copy `animate.ts` to your project, and import it to you component
+3. copy `animate.ts` to your project, and import it to your component
 
 ```javascript
 import { trigger, transition, animate } from  '@angular/animations';
@@ -101,9 +101,8 @@ export  class  AppComponent  implements  OnInit {
 <mycomponent  [@YOUR_ANIMATION_NAME]  *ngIf="show"></mycomponent>
 ```
 
-now you animation is working, you can use different combinations of animations and/or different states
+now your animation is working, you can use different combinations of animations and/or different states
 
-  
 
 read more about [angular animations](https://angular.io/guide/animations)
 

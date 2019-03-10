@@ -714,7 +714,7 @@ Done, call time ${diff}s.
 This project is created by MoustafaMohsen, visit moustafamohsen.com for other awesome projects or to get in touch.
 
 Contributors:
-- Moustafa Mohsen - Creator https://moustafamohsen.com
+- Moustafa Mohsen - Initial https://moustafamohsen.com
 
 Feel free to contribute to the project, thanks:
 https://github.com/MoustafaMohsen/css-to-angular-animations-and-styles#Contributing
